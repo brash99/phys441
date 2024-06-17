@@ -33,7 +33,7 @@ scipy==1.10.0
 
 
 ##### Machine Learning packages
-scikit-learn==0.20.3
+scikit-learn==1.5.0
 
 # Optional: the XGBoost library is only used in the ensemble learning chapter.
 xgboost==0.82
