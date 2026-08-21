@@ -22,6 +22,14 @@ The repository also contains older examples and third-party reference material. 
 an assignment says otherwise, use the numbered `Week*` directories as the current
 course sequence.
 
+Two third-party reference collections are stored as Git submodules and are not needed
+for the standard Week 1–14 notebooks. If an assignment asks you to use them, download
+them from the repository root with:
+
+```bash
+git submodule update --init
+```
+
 ## Keeping your copy current
 
 If you cloned this repository directly, update it from the repository root with:
