@@ -8,6 +8,7 @@ dependencies:
   - scipy=1.15
   - matplotlib=3.10
   - pandas=2.2
+  - lxml=5.3
   - sympy=1.13
   - statsmodels=0.14
   - scikit-learn=1.6
