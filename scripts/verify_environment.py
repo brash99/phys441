@@ -10,6 +10,7 @@ import sys
 REQUIRED_MODULES = (
     "astropy",
     "ipywidgets",
+    "lxml",
     "matplotlib",
     "numpy",
     "pandas",
