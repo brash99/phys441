@@ -1,8 +1,9 @@
 # Development environment setup
 
 These instructions create one consistent Python environment for PHYS 441/541. Do
-this before working on the Week 1 notebooks. Commands shown below work in a terminal
-on macOS, Windows, and Linux unless a step says otherwise.
+this before working on the Week 1 notebooks. On Windows, run the commands below in
+**Miniforge Prompt**, which you can open from the Start menu after installing
+Miniforge. On macOS or Linux, use your usual Terminal application.
 
 ## 1. Install Git and Conda
 
@@ -12,19 +13,22 @@ Install:
 - [Miniforge](https://conda-forge.org/download/), the small Conda installer used for
   the course environment
 
-After installing Miniforge, close and reopen your terminal. Check both programs:
+After installing Miniforge, open Miniforge Prompt on Windows or reopen your Terminal
+on macOS or Linux. Check both programs:
 
 ```bash
 git --version
 conda --version
 ```
 
-If `conda` is not found, use the Miniforge Prompt on Windows or follow the shell
-initialization guidance shown by the installer.
+If `conda` is not found on Windows, confirm that you opened **Miniforge Prompt**, not
+PowerShell or Command Prompt. On macOS or Linux, follow the shell-initialization
+guidance shown by the installer and reopen Terminal.
 
 ## 2. Clone the course repository
 
-In a terminal, move to the directory where you keep course work and run:
+In Miniforge Prompt on Windows, or Terminal on macOS or Linux, move to the directory
+where you keep course work and run:
 
 ```bash
 git clone https://github.com/brash99/phys441.git
@@ -85,7 +89,10 @@ and [working with Jupyter notebooks](https://www.jetbrains.com/help/pycharm/jupy
 
 ## Troubleshooting
 
-- **`conda: command not found`:** restart the terminal or use the Miniforge Prompt.
+- **Windows does not recognize `conda`:** open **Miniforge Prompt** from the Start
+  menu instead of PowerShell or Command Prompt.
+- **macOS or Linux does not recognize `conda`:** follow the shell-initialization
+  guidance shown by the Miniforge installer, then reopen Terminal.
 - **The `phys441` kernel is missing:** activate the environment and run
   `python -m ipykernel install --user --name phys441 --display-name "Python (phys441)"`.
 - **A notebook cannot find a course-local module:** launch Jupyter from the repository
