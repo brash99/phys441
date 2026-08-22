@@ -1,6 +1,6 @@
-# PHYS 441/541: Modeling and Simulation
+# PHYS 441 / PCSE 541: Modeling and Simulation
 
-Course materials for PHYS 441 and PHYS 541 at Christopher Newport University,
+Course materials for PHYS 441 and PCSE 541 at Christopher Newport University,
 Fall 2026.
 
 ## Start here
