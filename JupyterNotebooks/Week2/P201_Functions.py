@@ -181,19 +181,20 @@ def linearfitfunction(x,*paramlist):
     return paramlist[0]+paramlist[1]*x
 
 def linear_fit_plot_core(xi,yi,labelstring="Linear Fit",linestring="r-",plot_name=plt):
-
-    linestring2 = linestring+"-"
     
     init_vals = [0.0 for x in range(2)]
     popt, pcov = curve_fit(linearfitfunction,xi,yi,p0=init_vals)
     perr = np.sqrt(np.diag(pcov))
 
-    ps = np.random.multivariate_normal(popt,pcov,10000)
+    rng = np.random.default_rng(442)
+    ps = rng.multivariate_normal(popt,pcov,10000)
     ysample=np.asarray([linearfitfunction(xi,*pi) for pi in ps])
 
     lower = np.percentile(ysample,16.0,axis=0)
     upper = np.percentile(ysample,84.0,axis=0)
-    middle = (lower+upper)/2.0
+    residuals = yi-linearfitfunction(xi,*popt)
+    residual_sum_squares = np.sum(residuals**2)
+    dof = len(xi)-len(popt)
 
     print("%s: Coefficients (from curve_fit)" % labelstring)
     print (popt)
@@ -202,13 +203,20 @@ def linear_fit_plot_core(xi,yi,labelstring="Linear Fit",linestring="r-",plot_nam
 
     print()
     print ("%s: Final Result: y = (%0.5f +/- %0.5f) x + (%0.5f +/- %0.5f)" % (labelstring,popt[1],perr[1],popt[0],perr[0]))
+    print ("%s: Residual sum of squares = %0.5f" % (labelstring,residual_sum_squares))
+    print ("%s: Residual standard error = %0.5f" % (labelstring,np.sqrt(residual_sum_squares/dof)))
     print()
 
     #plt.plot(xi,yi,'o')
 
-    plot_name.plot(xi,middle,linestring,label=labelstring,linewidth=1)
-    plot_name.plot(xi,lower,linestring2,linewidth=1)
-    plot_name.plot(xi,upper,linestring2,linewidth=1)
+    fit_line, = plot_name.plot(
+        xi, linearfitfunction(xi, *popt), linestring,
+        label=labelstring, linewidth=1
+    )
+    plot_name.fill_between(
+        xi, lower, upper, color=fit_line.get_color(), alpha=0.25,
+        label="68% fit uncertainty band"
+    )
 
     return popt[0],popt[1],perr[0],perr[1]
 
@@ -251,19 +259,20 @@ def linear_fit_plot(xi,yi,plot_name,x_low="",x_high="",labelstring="Linear Fit",
             return intercept,slope,dintercept,dslope
         
 def linear_fit_plot_errors_core(xi,yi,sigmai,labelstring="Linear Fit",linestring="r-",plot_name=plt):
-
-    linestring2 = linestring+"-"
     
     init_vals = [0.0 for x in range(2)]
     popt, pcov = curve_fit(linearfitfunction,xi,yi,p0=init_vals,sigma=sigmai,absolute_sigma=True)
     perr = np.sqrt(np.diag(pcov))
 
-    ps = np.random.multivariate_normal(popt,pcov,10000)
+    rng = np.random.default_rng(442)
+    ps = rng.multivariate_normal(popt,pcov,10000)
     ysample=np.asarray([linearfitfunction(xi,*pi) for pi in ps])
 
-    lower = np.percentile(ysample,2.5,axis=0)
-    upper = np.percentile(ysample,97.5,axis=0)
-    middle = (lower+upper)/2.0
+    lower = np.percentile(ysample,16.0,axis=0)
+    upper = np.percentile(ysample,84.0,axis=0)
+    residuals = yi-linearfitfunction(xi,*popt)
+    chi2 = np.sum((residuals/sigmai)**2)
+    dof = len(xi)-len(popt)
 
     print("%s: Coefficients (from curve_fit)" % labelstring)
     print (popt)
@@ -272,13 +281,20 @@ def linear_fit_plot_errors_core(xi,yi,sigmai,labelstring="Linear Fit",linestring
 
     print()
     print ("%s: Final Result: y = (%0.5f +/- %0.5f) x + (%0.5f +/- %0.5f)" % (labelstring,popt[1],perr[1],popt[0],perr[0]))
+    print ("%s: Chi^2 / dof = %0.3f / %d" % (labelstring,chi2,dof))
+    print ("%s: Reduced chi^2 = %0.3f" % (labelstring,chi2/dof))
     print()
 
     #plt.plot(xi,yi,'o')
 
-    plot_name.plot(xi,middle,linestring,label=labelstring,linewidth=1)
-    plot_name.plot(xi,lower,linestring2,linewidth=1)
-    plot_name.plot(xi,upper,linestring2,linewidth=1)
+    fit_line, = plot_name.plot(
+        xi, linearfitfunction(xi, *popt), linestring,
+        label=labelstring, linewidth=1
+    )
+    plot_name.fill_between(
+        xi, lower, upper, color=fit_line.get_color(), alpha=0.25,
+        label="68% fit uncertainty band"
+    )
 
     return popt[0],popt[1],perr[0],perr[1]
 
