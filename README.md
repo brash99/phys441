@@ -6,8 +6,11 @@ Fall 2026.
 ## Start here
 
 1. Follow the [development-environment setup](Documents/Development_Environment_Setup.md).
-2. Create the course environment from [`environment.yml`](environment.yml).
-3. Run `python scripts/verify_environment.py` with that environment active.
+2. Create the course environment from [`environment.yml`](environment.yml). If you
+   already have a Python 3.12 environment that you want to use, the pip-based
+   [`scripts/install_environment.py`](scripts/install_environment.py) is an alternative.
+3. Run `python scripts/verify_environment.py` with that environment active. The
+   pip-based installer runs this verification automatically.
 4. Begin with the notebooks in [`JupyterNotebooks/Week1`](JupyterNotebooks/Week1).
 
 ## Repository map

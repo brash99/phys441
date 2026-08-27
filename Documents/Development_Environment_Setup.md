@@ -56,6 +56,21 @@ packages imported by the current Week 1–14 notebooks. Names such as `modsim`,
 `P201_Functions`, `rk_functions`, `Sun`, and `ga` are course files stored beside the
 notebooks, not packages to install from the internet.
 
+### Alternative: install into an existing Python 3.12 environment
+
+Conda is the preferred route because it creates an isolated, reproducible course
+environment. If you already have a Python 3.12 environment that you deliberately want
+to use, activate it and run:
+
+```bash
+python scripts/install_environment.py
+```
+
+The script installs mutually compatible release ranges matching `environment.yml` and
+then runs `scripts/verify_environment.py`. It always uses the same Python interpreter
+that was used to launch the script. To inspect the package ranges without installing
+anything, run `python scripts/install_environment.py --dry-run`.
+
 To incorporate a later course update:
 
 ```bash

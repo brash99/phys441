@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import platform
+import subprocess
 import sys
 
 
@@ -34,7 +35,27 @@ def main() -> int:
             continue
 
         version = getattr(module, "__version__", "version unavailable")
-        print(f"[ok] {module_name} {version}")
+        print(f"[import ok] {module_name} {version}")
+
+    # Importing a package is not sufficient evidence that the environment is
+    # consistent. For example, SciPy can import while warning that the installed
+    # NumPy version lies outside its supported range. ``pip check`` evaluates the
+    # dependency metadata for every installed distribution and catches that case.
+    dependency_check = subprocess.run(
+        [sys.executable, "-m", "pip", "check"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if dependency_check.returncode == 0:
+        print("[ok] installed package requirements are mutually compatible")
+    else:
+        details = "\n".join(
+            part.strip()
+            for part in (dependency_check.stdout, dependency_check.stderr)
+            if part.strip()
+        )
+        failures.append(f"dependency compatibility:\n{details}")
 
     if failures:
         print("\nEnvironment verification failed:", file=sys.stderr)
