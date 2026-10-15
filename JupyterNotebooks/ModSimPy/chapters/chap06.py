@@ -1,4 +1,4 @@
-from JupyterNotebooks.Week8.modsim import *
+from JupyterNotebooks.Week7and8.modsim import *
 
 def run_simulation(system, growth_func):
     results = TimeSeries()

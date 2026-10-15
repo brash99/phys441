@@ -26,7 +26,7 @@ def plot_results(S, I, R):
     decorate(xlabel='Time (days)',
              ylabel='Fraction of population')
 
-from JupyterNotebooks.Week8.modsim import *
+from JupyterNotebooks.Week7and8.modsim import *
 
 def run_simulation(system, update_func):
     frame = TimeFrame(columns=system.init.index)
