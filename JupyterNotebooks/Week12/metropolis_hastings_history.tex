@@ -1,0 +1,402 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\setlist{itemsep=0.3em,topsep=0.4em}
+
+\title{Metropolis--Hastings:\\A Multidisciplinary Story of Modeling and Simulation}
+\author{PHYS 441}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The Metropolis--Hastings algorithm is now used in physics, statistics, computer
+science, engineering, and many other fields. Its origin is an unusually clear
+example of how modeling and simulation develop: a physical question motivated a
+mathematical reformulation; an algorithm made that reformulation practical; a
+program translated the algorithm into machine instructions; and a new computer
+made the calculation possible. This reading follows that development from Los
+Alamos in the 1940s and 1950s to Hastings's generalization in 1970. It also
+examines a historical complication: the familiar name of the algorithm does not
+fully describe the contributions of the people who created it.
+\end{abstract}
+
+\section{Why this history belongs in a modeling course}
+
+A finished simulation can make its component parts look inevitable. We are
+given a model, write an algorithm, run a program, and interpret the output. The
+history of Metropolis--Hastings shows that these steps are neither automatic nor
+the work of a single discipline.
+
+The original project required all of the following:
+
+\begin{itemize}
+  \item a \textbf{physical model} of matter in thermal equilibrium;
+  \item a \textbf{statistical description} of which configurations should be
+        common and which should be rare;
+  \item a \textbf{mathematical insight} that the desired average could be found
+        without evaluating an enormous integral directly;
+  \item an \textbf{algorithm} that generated configurations with the correct
+        long-run frequencies;
+  \item a \textbf{program} written for a machine with extremely limited memory;
+  \item a functioning \textbf{electronic computer}; and
+  \item scientific judgment about validation, approximation, and uncertainty.
+\end{itemize}
+
+Physics, computer science, mathematics, and engineering were not separate
+layers added after the fact. The method arose from their interaction.
+
+\section{The Los Alamos setting}
+
+Modern Monte Carlo computation grew out of the scientific environment created
+by the Manhattan Project. Many Los Alamos calculations involved systems with a
+vast number of possible histories or configurations: neutron transport,
+radiation transport, thermonuclear reactions, hydrodynamics, and equations of
+state. Exact analytic solutions were rarely available, while exhaustive
+numerical enumeration was impossible.
+
+During the war, much numerical work was performed by teams of human
+``computers'' and electromechanical machines. Electronic machines such as ENIAC
+then demonstrated that calculations could be performed at an unprecedented
+scale. Stanis\l aw Ulam recognized that this new speed could revive statistical
+sampling methods that had previously required too much arithmetic. John von
+Neumann helped formulate and implement early applications, including neutron
+transport calculations \cite{metropolis1987}.
+
+The name \emph{Monte Carlo} emphasized the use of random numbers and alluded to
+games of chance. Randomness, however, was not being used as a substitute for
+rigor. It was being engineered into a numerical method: repeat a random
+experiment, calculate an observable, and use the resulting statistics to
+estimate a quantity that is otherwise difficult to compute.
+
+\section{The people behind the 1953 paper}
+
+The landmark paper, ``Equation of State Calculations by Fast Computing
+Machines,'' was published in 1953 by Nicholas Metropolis, Arianna W.
+Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller, and Edward Teller
+\cite{metropolis1953}. The author list brought together two married couples and
+the leader of the Los Alamos computing effort.
+
+\subsection{Nicholas Metropolis: physics and computing infrastructure}
+
+Nicholas Constantine Metropolis (1915--1999) trained as an experimental
+physicist at the University of Chicago. He worked with Enrico Fermi, joined the
+Manhattan Project at Los Alamos in 1943, and worked on equations of state for
+materials at high temperature and pressure. After the war, he became a major
+figure in scientific computing.
+
+Metropolis directed the construction of the Los Alamos MANIAC computer, a
+stored-program machine based on the architecture developed by von Neumann and
+his collaborators. MANIAC began operating in 1952 and performed the calculation
+reported in the 1953 paper. Metropolis supplied far more than a piece of
+hardware: he led the group, secured institutional support, allocated scarce
+machine time, and helped create a setting in which physicists and programmers
+could turn new numerical ideas into working calculations \cite{anderson1986}.
+
+\subsection{Marshall Rosenbluth: the statistical-mechanical algorithm}
+
+Marshall Rosenbluth (1927--2003) was a theoretical physicist who later became a
+leading figure in plasma physics and controlled-fusion research. In his later
+account of the 1953 project, he credited Edward Teller with suggesting the use
+of Monte Carlo methods to take statistical-mechanical ensemble averages.
+Rosenbluth then worked out the acceptance procedure that made this idea
+efficient \cite{gubernatis2005}.
+
+The essential insight was to avoid drawing configurations uniformly and then
+assigning almost all of them negligible statistical weight. Instead, the
+algorithm would construct a random walk that spent more time in configurations
+with larger Boltzmann weight.
+
+\subsection{Arianna Rosenbluth: turning the method into a program}
+
+Arianna Wright Rosenbluth (1927--2020) was a physicist and programmer. She
+wrote the MANIAC implementation used for the published calculation. Programming
+an early computer was not a matter of translating a few lines of pseudocode into
+a high-level language. The machine had limited memory, primitive input and
+output, and no modern operating system or numerical library. The programmer had
+to understand the mathematics, the machine representation, the control flow,
+and the numerical limitations together.
+
+Her work is a reminder that an algorithm is not yet a simulation. A simulation
+exists only after the algorithm has been expressed in a form that a real machine
+can execute and its results have been checked. Arianna Rosenbluth's role was
+underemphasized for decades, in part because programming was often treated as
+secondary labor and because women in early computing were frequently omitted
+from later accounts \cite{apsrosenbluth}.
+
+\subsection{Augusta and Edward Teller: computation and physical motivation}
+
+Augusta ``Mici'' Teller (1909--2000) studied mathematics in Budapest and worked
+in the Los Alamos computations group during the Manhattan Project. She later
+worked with early computers at Argonne and Los Alamos. Accounts suggest that
+she participated in the initial programming effort, although Arianna Rosenbluth
+reported that she subsequently rewrote the program used for the calculation
+\cite{gubernatis2005,micibio}.
+
+Edward Teller (1908--2003) was a theoretical physicist deeply involved in
+nuclear and thermonuclear research. His interest in the project was scientifically
+natural. Statistical mechanics relates microscopic particle configurations to
+macroscopic properties such as pressure, temperature, and density. Equations of
+state are also essential in modeling matter under the extreme conditions found
+in shocks, dense plasmas, stellar interiors, and nuclear-weapon calculations.
+
+The published demonstration was not itself a simulation of a nuclear weapon.
+It studied a simplified equilibrium system of interacting particles. It did,
+however, emerge from a laboratory in which equations of state, high-dimensional
+calculations, and the development of nuclear technology were closely connected.
+
+\section{The physical and mathematical problem}
+
+Consider a system of $N$ interacting particles. A single state $x$ specifies
+the positions of all particles, and $E(x)$ is the energy of that configuration.
+In the canonical ensemble, a configuration has probability density proportional
+to its Boltzmann factor,
+
+\begin{equation}
+  \widetilde{\pi}(x)=\exp\!\left[-\frac{E(x)}{k_{\mathrm B}T}\right],
+\end{equation}
+
+where $T$ is temperature and $k_{\mathrm B}$ is Boltzmann's constant. The
+equilibrium expectation of an observable $F$ is
+
+\begin{equation}
+ \langle F\rangle =
+ \frac{\displaystyle\int F(x)e^{-E(x)/(k_{\mathrm B}T)}\,dx}
+      {\displaystyle\int e^{-E(x)/(k_{\mathrm B}T)}\,dx}.
+ \label{eq:ensemble-average}
+\end{equation}
+
+If each of hundreds of particles contributes two or three coordinates, then
+the integral is hundreds-dimensional. A grid with only ten values per coordinate
+would require $10^{200}$ points for a 200-dimensional problem. This is the
+\emph{curse of dimensionality}: increasing computational power alone cannot make
+such a grid practical.
+
+Naive random sampling is also inefficient. Most randomly selected configurations
+may have particles unrealistically close together, producing very large energies
+and nearly zero Boltzmann weights. The computer spends almost all of its effort
+generating configurations that contribute almost nothing to
+Eq.~\eqref{eq:ensemble-average}.
+
+\section{The algorithmic leap}
+
+The 1953 method generates a sequence of configurations
+
+\[
+ X_0,X_1,X_2,\ldots
+\]
+
+instead of selecting independent configurations uniformly. Starting from the
+current configuration $x$, it performs the following steps:
+
+\begin{enumerate}
+  \item Select a particle and propose a small random displacement, producing a
+        candidate configuration $y$.
+  \item Calculate the energy change $\Delta E=E(y)-E(x)$.
+  \item If $\Delta E\leq 0$, accept the move.
+  \item If $\Delta E>0$, accept the move with probability
+        $e^{-\Delta E/(k_{\mathrm B}T)}$.
+  \item If the proposal is rejected, record the old configuration again.
+\end{enumerate}
+
+For a symmetric proposal, this is equivalent to accepting with probability
+
+\begin{equation}
+ \alpha(x,y)=\min\!\left\{1,
+ \frac{\widetilde{\pi}(y)}{\widetilde{\pi}(x)}\right\}.
+ \label{eq:metropolis}
+\end{equation}
+
+The unknown normalization integral cancels in the ratio. More importantly, the
+accepted configurations occur with the desired equilibrium frequencies. After
+initialization effects have diminished, the integral in
+Eq.~\eqref{eq:ensemble-average} can be estimated by the ordinary average
+
+\begin{equation}
+ \langle F\rangle \approx \frac{1}{M}\sum_{t=1}^{M}F(X_t).
+\end{equation}
+
+This is a profound change in the computational problem. Rather than evaluating
+an impossible integral, the machine performs local energy calculations and
+random accept--reject decisions. The answer emerges from the long-run behavior
+of the constructed Markov chain.
+
+The original paper demonstrated the method using two-dimensional hard disks.
+The model was deliberately simple: disks could not overlap, and the calculation
+estimated an equation of state. Simplicity made the method testable while still
+addressing the collective behavior of many interacting particles.
+
+\section{From Metropolis to Metropolis--Hastings}
+
+The proposal in the 1953 calculation was symmetric. If the mechanism could
+propose $y$ from $x$, the reverse displacement was equally likely. In 1970,
+W. Keith Hastings generalized the method to an arbitrary proposal density
+$q(y\mid x)$ \cite{hastings1970}. The acceptance probability became
+
+\begin{equation}
+ \alpha(x,y)=\min\!\left\{1,
+ \frac{\widetilde{\pi}(y)q(x\mid y)}
+      {\widetilde{\pi}(x)q(y\mid x)}\right\}.
+ \label{eq:hastings}
+\end{equation}
+
+The extra ratio corrects for a proposal mechanism that favors one direction.
+When the proposal is symmetric, $q(y\mid x)=q(x\mid y)$, the proposal terms
+cancel, and Eq.~\eqref{eq:hastings} reduces to the original Metropolis rule in
+Eq.~\eqref{eq:metropolis}.
+
+Hastings transformed a powerful statistical-physics procedure into a broadly
+applicable sampling framework. The method now supports Bayesian inference,
+molecular simulation, lattice field theory, reliability analysis, inverse
+problems, uncertainty quantification, and many other applications.
+
+\section{Whose algorithm is it?}
+
+The familiar name creates a misleadingly simple story. Historical recollections
+do not agree in every detail. Edward Teller later described a strongly
+collaborative effort, while Marshall Rosenbluth assigned the central algorithmic
+and programming work primarily to himself and Arianna. Later historical work
+generally supports the conclusion that the Rosenbluths made contributions much
+larger than the usual name suggests \cite{gubernatis2005}.
+
+Why, then, did ``Metropolis algorithm'' become standard? Metropolis was first
+author, led the computing group, and made MANIAC available. Naming a result after
+the first author was natural, and a short name spread more easily than the full
+author list. The episode illustrates several features of scientific credit:
+
+\begin{itemize}
+  \item the name attached to a method need not identify its sole inventor;
+  \item programming and implementation may be undervalued relative to theory;
+  \item institutional leadership can be essential even when it is not the same
+        as inventing the central formula; and
+  \item later recollections must be compared critically rather than treated as
+        perfectly objective records.
+\end{itemize}
+
+The aim is not to replace one heroic inventor with another. The better lesson is
+that the method was produced by a network of complementary contributions.
+
+\section{A timeline of the development}
+
+\begin{center}
+\begin{tabular}{@{}p{0.13\textwidth}p{0.78\textwidth}@{}}
+\toprule
+\textbf{Period} & \textbf{Development} \\
+\midrule
+1940s & Los Alamos uses large-scale numerical calculation for neutron transport,
+        weapons physics, and equations of state. Ulam and von Neumann develop
+        modern Monte Carlo ideas for electronic computers. \\
+1948--1952 & Metropolis leads the construction of MANIAC at Los Alamos. \\
+1952--1953 & Teller, the Rosenbluths, the Tellers, and Metropolis develop and run
+             the statistical-mechanics calculation on MANIAC. \\
+1953 & The five-author paper introduces the acceptance algorithm using a
+       two-dimensional hard-disk equation-of-state calculation. \\
+1970 & Hastings publishes the general acceptance rule for asymmetric proposals. \\
+Later decades & MCMC becomes central to computational physics and statistics,
+                then spreads throughout science and engineering. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Lessons for physics, computer science, and engineering}
+
+\textbf{For physics:} The probability distribution was not an arbitrary curve.
+It came from the canonical ensemble and encoded physical assumptions about
+equilibrium, energy, and temperature. A simulation cannot be better than the
+model and approximations on which it is based.
+
+\textbf{For mathematics and statistics:} Stationarity and detailed balance
+explain why the acceptance rule targets the desired distribution. Convergence,
+autocorrelation, and sampling error determine whether a finite run provides a
+useful estimate.
+
+\textbf{For computer science:} The project required an algorithm whose local
+operations were feasible on real hardware, a random-number mechanism, a careful
+implementation, and data handling under severe memory constraints. Complexity
+was changed by reformulating the task rather than merely running the original
+calculation faster.
+
+\textbf{For engineering:} MANIAC had to be designed, constructed, maintained,
+and operated reliably. The method also required tradeoffs: proposal size versus
+acceptance, physical realism versus tractability, and accuracy versus available
+machine time.
+
+\textbf{For everyone:} Modeling and simulation form a feedback loop. Physical
+questions inspire mathematical structures; mathematical structures suggest
+algorithms; hardware constraints reshape algorithms; computational results
+expose weaknesses in models; and validation sends the team back around the loop.
+
+\section{Questions for discussion}
+
+\begin{enumerate}
+  \item Which contribution was most essential: the physical question, Teller's
+        ensemble idea, Rosenbluth's acceptance rule, Arianna Rosenbluth's
+        program, or Metropolis's computer? Can this question have a unique answer?
+  \item Why is a high-dimensional integral not solved simply by building a
+        computer that is ten or one hundred times faster?
+  \item In what sense is the Markov chain an artificial process rather than a
+        simulation of the particles' real-time motion?
+  \item What evidence would you require before trusting an equation of state
+        computed by this method?
+  \item Which forms of scientific labor are most likely to disappear from a
+        method's name or from its standard textbook account?
+  \item Identify a modern modeling problem in which advances in physics,
+        algorithms, software, and hardware remain inseparable.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+
+\bibitem{metropolis1953}
+N. Metropolis, A. W. Rosenbluth, M. N. Rosenbluth, A. H. Teller, and E. Teller,
+``Equation of State Calculations by Fast Computing Machines,''
+\emph{Journal of Chemical Physics} \textbf{21}, 1087--1092 (1953),
+\href{https://doi.org/10.1063/1.1699114}{doi:10.1063/1.1699114}.
+
+\bibitem{hastings1970}
+W. K. Hastings,
+``Monte Carlo Sampling Methods Using Markov Chains and Their Applications,''
+\emph{Biometrika} \textbf{57}, 97--109 (1970),
+\href{https://doi.org/10.1093/biomet/57.1.97}{doi:10.1093/biomet/57.1.97}.
+
+\bibitem{gubernatis2005}
+J. E. Gubernatis,
+``Marshall Rosenbluth and the Metropolis Algorithm,''
+\emph{Physics of Plasmas} \textbf{12}, 057303 (2005),
+\href{https://doi.org/10.1063/1.1887186}{doi:10.1063/1.1887186}.
+
+\bibitem{metropolis1987}
+N. Metropolis,
+``The Beginning of the Monte Carlo Method,''
+\emph{Los Alamos Science} \textbf{15}, 125--130 (1987),
+\url{https://mcnp.lanl.gov/pdf_files/Article_1987_LAS_Metropolis_125--130.pdf}.
+
+\bibitem{anderson1986}
+H. L. Anderson,
+``Metropolis, Monte Carlo, and the MANIAC,''
+\emph{Los Alamos Science} \textbf{14}, 96--108 (1986),
+\url{https://mcnp.lanl.gov/pdf_files/Article_1986_LAS_Anderson_96--108.pdf}.
+
+\bibitem{apsrosenbluth}
+S. Chen,
+``Arianna Rosenbluth and the Metropolis Monte Carlo Algorithm,''
+\emph{APS News} (2022),
+\url{https://www.aps.org/apsnews/2022/03/rosenbluth-metropolis-monte-carlo-algorithm}.
+
+\bibitem{micibio}
+Atomic Heritage Foundation,
+``Augusta `Mici' Teller,''
+\url{https://ahf.nuclearmuseum.org/ahf/profile/augusta-mici-teller/}.
+
+\end{thebibliography}
+
+\end{document}
