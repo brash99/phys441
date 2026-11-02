@@ -1,0 +1,446 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{courseblue}{HTML}{234E70}
+\definecolor{lightblue}{HTML}{EAF2F8}
+\definecolor{lightgray}{HTML}{F3F4F6}
+\definecolor{darkgray}{HTML}{374151}
+
+\hypersetup{colorlinks=true,linkcolor=courseblue,urlcolor=courseblue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist{itemsep=0.2em,topsep=0.3em,leftmargin=1.6em}
+\setlist[enumerate]{label=\arabic*.,leftmargin=1.8em}
+\renewcommand{\arraystretch}{1.25}
+
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\newcommand{\keybox}[1]{%
+  \begin{center}
+  \fcolorbox{courseblue}{lightblue}{%
+    \begin{minipage}{0.92\textwidth}
+      #1
+    \end{minipage}}
+  \end{center}}
+
+\newcommand{\checkitem}{\item[$\square$]}
+
+\title{\textcolor{courseblue}{\textbf{Final Modeling and Simulation Project}}\\[0.3em]
+\large A Guide to Developing, Testing, and Understanding a Computational Model}
+\author{PHYS 441}
+\date{}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+\thispagestyle{fancy}
+
+\keybox{\textbf{The central principle:} A simple model that you understand
+deeply, verify carefully, and investigate thoughtfully is preferable to an
+ambitious model that you treat as a black box.}
+
+\section{Purpose of the project}
+
+The final project is an opportunity to take responsibility for a complete
+modeling and simulation problem. You will choose a system, formulate a focused
+question, implement a model, test the implementation, investigate its behavior,
+and explain what the results do and do not mean.
+
+Your project does \emph{not} need to be brand new, publishable, or
+earth-shattering. You may begin with a model from this course, another course,
+your research, a textbook, or a published example. Originality can be valuable,
+but it is not the primary goal. The goal is intellectual ownership.
+
+By the end of the project, you should be able to say:
+
+\begin{quote}
+I understand what this model assumes, how it is implemented, how I tested it,
+where I encountered difficulties, what its results mean, and what its
+limitations are.
+\end{quote}
+
+This is an \textbf{individual project}. Discussion with classmates is welcome,
+but every student must formulate, implement, investigate, and explain an
+individual project.
+
+\section{Learning objectives}
+
+The project will give you practice in the full modeling workflow. You will:
+
+\begin{itemize}
+  \item translate a broad topic into a specific, answerable question;
+  \item identify state variables, parameters, governing equations, and modeling
+        assumptions;
+  \item convert a mathematical or rule-based model into a working computation;
+  \item distinguish verification from scientific interpretation;
+  \item design checks that can expose incorrect or unreliable results;
+  \item conduct a controlled computational investigation rather than a single
+        demonstration run;
+  \item diagnose and document difficulties encountered during implementation;
+  \item communicate results, uncertainty, and limitations clearly; and
+  \item produce code and documentation that another person can understand and
+        reproduce.
+\end{itemize}
+
+\section{Choosing an appropriate project}
+
+Begin with a question, not merely a topic. A topic such as ``epidemics,''
+``orbits,'' or ``random walks'' is too broad to guide an investigation. A useful
+project question identifies a relationship, comparison, prediction, or behavior
+that the model can examine.
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.29\textwidth}
+                >{\raggedright\arraybackslash}p{0.61\textwidth}}
+\toprule
+\rowcolor{lightgray}
+\textbf{Too broad} & \textbf{Focused enough to investigate} \\
+\midrule
+Simulate an epidemic. & How do recovery rate and initial infection fraction
+affect peak infection and outbreak duration in an SIR model? \\
+Model an orbit. & How does numerical energy drift depend on time step for Euler,
+midpoint, and fourth-order Runge--Kutta orbit integrators? \\
+Study random walks. & How does the mean first-passage time depend on boundary
+distance for unbiased and biased one-dimensional random walks? \\
+Simulate diffusion. & How do grid spacing and time step affect the stability and
+accuracy of an explicit finite-difference diffusion model? \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+An appropriate project has all of the following characteristics:
+
+\begin{itemize}
+  \item The question is narrow enough to address during the remaining course
+        time.
+  \item The model has identifiable assumptions, variables, and rules or
+        equations.
+  \item A small but complete version can be implemented before extensions are
+        attempted.
+  \item At least one meaningful verification check is possible.
+  \item The model supports a controlled comparison or parameter study.
+  \item The expected output is interpretable, not merely visually impressive.
+\end{itemize}
+
+If you already have a suitable problem from research or another course, you may
+use it. If you prefer to extend a model from PHYS 441, that is also an excellent
+choice. If you are unsure what to choose, ask for an instructor-suggested
+project. These routes are equally legitimate and will be evaluated with the
+same criteria.
+
+\section{Required elements of every project}
+
+\subsection{A specific question}
+
+State the question your simulation will investigate. Your question should tell
+the reader what will be varied, compared, estimated, or explained. A project may
+evolve, but it should always have a question that determines what evidence is
+relevant.
+
+\subsection{A clearly described model}
+
+Explain the model independently of the code. Identify:
+
+\begin{itemize}
+  \item the physical, biological, social, mathematical, or engineered system;
+  \item the variables that define its state;
+  \item the parameters and their meaning;
+  \item the equations, transition rules, or update rules;
+  \item the initial and boundary conditions, when applicable;
+  \item the assumptions that make the model manageable; and
+  \item important real effects that the model omits.
+\end{itemize}
+
+A diagram, flowchart, table, or pseudocode description may be helpful. The model
+description must be understandable without reading the source code.
+
+\subsection{An implementation you understand}
+
+You are not required to write every numerical operation from scratch. You may
+use standard scientific libraries and may consult existing implementations.
+However, you must understand every important part of the computation and clearly
+identify any code or method adapted from another source.
+
+Using a library does not remove the need to explain the model. For example, if
+you use an ODE solver, you must still explain the equations, initial conditions,
+integration interval, important solver settings, and how the returned solution
+is interpreted. Existing software may support your understanding; it may not
+replace it.
+
+\subsection{Verification}
+
+Verification asks:
+
+\begin{quote}
+\textbf{Did I implement the model that I intended to implement?}
+\end{quote}
+
+Every project must include at least one concrete verification test. Possible
+tests include:
+
+\begin{itemize}
+  \item comparison with a known analytic solution;
+  \item a hand calculation for the first few update steps;
+  \item a limiting case whose behavior is known;
+  \item conservation of energy, mass, probability, or another invariant;
+  \item convergence under smaller time steps or finer spatial grids;
+  \item comparison with an independently written simpler implementation;
+  \item unit tests for important computational functions; or
+  \item a benchmark value from a reliable source.
+\end{itemize}
+
+``The plot looks reasonable'' is not, by itself, verification. State the expected
+result before presenting the test, show the evidence, and explain whether the
+test passed.
+
+\subsection{A controlled computational investigation}
+
+A single simulation run is not a complete investigation. After the baseline
+model works, study its behavior through one or more controlled comparisons:
+
+\begin{itemize}
+  \item vary one or two physically or mathematically meaningful parameters;
+  \item compare multiple initial conditions;
+  \item compare numerical methods, resolutions, or step sizes;
+  \item repeat a stochastic simulation with multiple random seeds;
+  \item compare alternative model assumptions; or
+  \item perform a sensitivity or uncertainty study.
+\end{itemize}
+
+For at least one comparison, record a prediction before running the calculation.
+Then compare the actual outcome with the prediction. Unexpected behavior is not
+automatically a failure; it is often the beginning of the most interesting part
+of the investigation.
+
+\subsection{A difficulty and diagnosis record}
+
+Real computational work rarely proceeds perfectly from start to finish. Every
+project must document at least one substantive difficulty. Examples include a
+bug, instability, excessive run time, unexpected parameter sensitivity,
+inconsistent units, a result that looked plausible but was wrong, or a model
+assumption that failed.
+
+For the selected difficulty, explain:
+
+\begin{enumerate}
+  \item What did you observe?
+  \item What possible causes did you consider?
+  \item What evidence helped identify the cause?
+  \item What did you change, if anything?
+  \item What did you learn from the process?
+\end{enumerate}
+
+You are not being graded on having a trouble-free project. You are being graded
+on responding to difficulties thoughtfully and using evidence.
+
+\subsection{Interpretation and limitations}
+
+Separate what the program produced from what you infer. Explain the important
+patterns in the output and connect them to the original project question. Identify
+at least two limitations, such as simplifying assumptions, uncertain parameters,
+finite sampling, numerical error, restricted dimensionality, missing physics,
+or a narrow validation range. Explain how those limitations constrain the
+conclusions.
+
+\newpage
+\section{Scope: core, investigation, and extension}
+
+Plan the project in three layers:
+
+\begin{description}[style=nextline,leftmargin=1.5em,labelindent=0pt]
+  \item[Core model -- required]
+  The smallest scientifically complete implementation. It should run, produce
+  interpretable output, and support at least one verification test.
+
+  \item[Investigation -- required]
+  A controlled study that uses the working model to address the project question.
+
+  \item[Extension -- optional]
+  An additional feature attempted only after the core and investigation work.
+  Examples include another dimension, a more realistic force law, a second
+  numerical method, improved performance, or comparison with data.
+\end{description}
+
+Define the core conservatively. A completed and carefully investigated core is
+more valuable than an unfinished collection of ambitious features. Extensions
+do not compensate for missing verification or unclear interpretation.
+
+\section{Project schedule and milestones}
+
+Project work begins during the week of November 9 and continues through final
+exam week. The checkpoints below are designed to reveal problems early and to
+protect time for verification, investigation, and writing. They are progress
+targets: you should seek help promptly if you are falling substantially behind
+them.
+
+\subsection*{Week of November 9: Question, scope, and proposal}
+
+Choose a topic, turn it into a focused question, and define a core project that
+can be completed even if an optional extension is not. By the end of the week,
+submit approximately one page containing:
+
+\begin{enumerate}
+  \item the focused project question;
+  \item a short description of the modeled system;
+  \item state variables, parameters, and governing rules or equations;
+  \item the planned computational method;
+  \item expected plots, statistics, or other outputs;
+  \item at least one proposed verification test;
+  \item the minimum viable core model; and
+  \item one possible extension if time permits.
+\end{enumerate}
+
+The proposal is a planning document, not an irreversible contract. Instructor
+feedback may reduce the scope or sharpen the question.
+
+\subsection*{Week of November 16: Model and first implementation}
+
+Translate the project idea into a precise model and begin implementing it. By
+the end of the week, be prepared to show:
+
+\begin{itemize}
+  \item the governing equations or update rules;
+  \item a pseudocode, flowchart, or function-level implementation plan;
+  \item one predictable test case or hand-worked update; and
+  \item evidence that a meaningful piece of the implementation behaves as
+        expected.
+\end{itemize}
+
+This is the time to discover whether the proposed model is computationally
+manageable. Reduce the scope now if the core calculation is not coming together.
+
+\subsection*{November 23--24: Minimum viable simulation}
+
+Use the class days before the Thanksgiving break to connect the pieces. The core
+model should now run from start to finish. Be prepared to show:
+
+\begin{itemize}
+  \item one complete baseline run;
+  \item at least one diagnostic plot or quantitative summary;
+  \item preliminary verification evidence; and
+  \item a short list of known problems or uncertainties.
+\end{itemize}
+
+Do not wait for a polished result before reporting a problem. The purpose of this
+checkpoint is to identify difficulties while there is still time to diagnose
+them. The Thanksgiving break is not assumed to be a full project work week.
+
+\subsection*{Week of November 30: Verification and investigation}
+
+Complete the verification tests and the controlled comparisons that address the
+project question. Interpret the results as they develop, and keep a record of
+failed approaches, numerical difficulties, and model limitations. By the end of
+the week, the substantive computation should be nearly complete so that the
+remaining time can be used for analysis and communication.
+
+\subsection*{Final exam week: Synthesis and submission}
+
+Finish the analysis, figures, report or notebook, code documentation, and
+reproduction instructions. Check that every conclusion is supported by evidence
+and that another person could follow and run the work. Add an extension only if
+the verified core project and its interpretation are already complete.
+
+\keybox{\textbf{Final deadline: Friday, December 11.} The complete project must
+be submitted no later than December 11. This is the final, drop-dead submission
+date; plan to finish early enough to allow time for a last reproducibility check.}
+
+\section{Final submission}
+
+Submit the following items:
+
+\begin{enumerate}
+  \item \textbf{Project report or computational notebook.} It must include the
+        question, model, assumptions, method, verification, investigation,
+        results, difficulty record, limitations, and conclusions.
+  \item \textbf{Complete source code.} The submitted version must reproduce the
+        reported results or clearly explain any external data or setup required.
+  \item \textbf{Reproduction instructions.} Include required software, the order
+        in which files or notebook cells should be run, and any important run-time
+        expectations.
+  \item \textbf{Sources and acknowledgments.} Cite data, equations, algorithms,
+        documentation, code, and other material that informed the project.
+\end{enumerate}
+
+Your final report need not recount every line of code. It should tell a coherent
+scientific and computational story: what you asked, what you built, how you know
+it works, what you learned, and where confidence in the result ends.
+
+\section{Evaluation rubric}
+
+\begin{center}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.27\textwidth}
+                >{\centering\arraybackslash}p{0.10\textwidth}
+                >{\raggedright\arraybackslash}p{0.53\textwidth}}
+\toprule
+\rowcolor{lightgray}
+\textbf{Category} & \textbf{Weight} & \textbf{Evidence of strong work} \\
+\midrule
+Question, model, and assumptions & 20\% & Focused question; clear variables,
+parameters, equations or rules; assumptions and omissions identified. \\
+
+Implementation and understanding & 20\% & Coherent implementation; important
+steps explained; libraries and adapted material used transparently; student
+demonstrates ownership rather than black-box use. \\
+
+Verification and numerical reliability & 20\% & Relevant test with a stated
+expected result; evidence presented and interpreted; numerical limitations
+addressed where appropriate. \\
+
+Investigation and interpretation & 20\% & Controlled comparisons answer the
+project question; results are analyzed rather than merely displayed; claims are
+supported by evidence. \\
+
+Difficulties, limitations, and reflection & 10\% & A substantive difficulty is
+diagnosed thoughtfully; at least two limitations are connected to the strength
+of the conclusions. \\
+
+Communication and reproducibility & 10\% & Clear organization and figures;
+complete code and instructions; sources acknowledged; another reader can follow
+and reproduce the work. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Project novelty, code length, visual complexity, and raw computational cost are
+not grading categories. A modest project can earn full credit through depth,
+correctness, careful investigation, and clear communication.
+
+\section{Final checklist}
+
+Before submitting, confirm that your project contains all of the following:
+
+\begin{itemize}
+  \checkitem A focused question that the simulation can address.
+  \checkitem A model description understandable without reading the code.
+  \checkitem Clearly stated variables, parameters, assumptions, and omissions.
+  \checkitem A complete, runnable core implementation.
+  \checkitem At least one concrete verification test.
+  \checkitem A controlled parameter, method, initial-condition, resolution, or
+             stochastic comparison.
+  \checkitem A documented implementation difficulty and evidence-based diagnosis.
+  \checkitem Results connected explicitly to the original question.
+  \checkitem At least two limitations and their consequences for interpretation.
+  \checkitem Complete source code and reproduction instructions.
+  \checkitem Citations or acknowledgments for external ideas, data, and code.
+\end{itemize}
+
+\keybox{\textbf{Remember:} The purpose of the project is not to prove that your
+first idea was correct or that your code worked immediately. The purpose is to
+show that you can formulate a model, make it computational, test it, learn from
+its failures, and use it responsibly to answer a question.}
+
+\end{document}
